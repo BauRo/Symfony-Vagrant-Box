@@ -1,0 +1,23 @@
+---
+packages:
+  - apache2
+  - php5
+  - sendmail
+  - unzip
+  - git
+  - vim
+  - curl
+  - acl
+  - mysql-server
+  - mysql-client
+  - python-mysqldb
+
+extentions:
+  - php5-mysql
+  - php-apc
+  - php5-xmlrpc
+  - php-soap
+  - php5-gd
+  - php5-pgsql
+  - php5-curl
+  - php5-xdebug

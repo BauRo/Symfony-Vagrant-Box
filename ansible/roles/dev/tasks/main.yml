@@ -1,0 +1,6 @@
+---
+- include: installation.yml
+- include: configuration.yml
+- include: database.yml
+- include: personalize.yml
+- include: symfony.yml

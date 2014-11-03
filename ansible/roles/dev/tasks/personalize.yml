@@ -1,0 +1,38 @@
+---
+- name: Set hostname
+  sudo: yes
+  hostname: name={{ hostname }}
+
+- name: Create storage dir
+  sudo: yes
+  file: path=/storage state=directory owner={{ remote_user }}
+
+- name: Create locale data dir
+  sudo: yes
+  file: path=/vagrant/data state=directory owner={{ remote_user }}
+
+- name: Create data symlink
+  sudo: yes
+  file: src=/vagrant/data dest=/storage/data owner={{ remote_user }} group=webserver state=link mode=0755
+
+- name: Add custom domains to /etc/hosts
+  sudo: yes
+  action: lineinfile state=present dest=/etc/hosts regexp="^127\.0\.0\.1 {{ item }}$" line="127.0.0.1 {{ item }}"
+  with_items:
+  - web-server
+  - "{{ hostname }}"
+  - www.{{ hostname }}
+
+- name: Add virtual hosts
+  template: src=vhost/vhost.conf.j2 dest=/etc/apache2/sites-available/{{ item.key }}.conf mode=0644
+  with_dict: vhosts
+  sudo: yes
+  notify: apache-reload
+  when: item.value.enabled|bool
+
+- name: Enabel virtual hosts
+  command: a2ensite {{ item.key }}.conf creates=/etc/apache2/sites-enabled/{{ item.key }}.conf
+  with_dict: vhosts
+  sudo: yes
+  notify: apache-reload
+  when: item.value.enabled|bool

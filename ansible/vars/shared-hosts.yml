@@ -1,0 +1,13 @@
+---
+hostname: your-domain.com
+vhosts:
+  'your-domain.com':
+    enabled: true
+    listen:
+      - '*:80'
+      - '127.0.0.1:8080'
+    root: /storage/data/your-domain.com/web
+    name: your-domain.com
+    aliases:
+      - www.your-domain.com
+#    settings:

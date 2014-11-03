@@ -1,0 +1,15 @@
+---
+- name: apache-restart
+  sudo: yes
+  service: name=apache2 state=restarted
+
+- name: apache-reload
+  service: name=apache2 state=reloaded
+  sudo: yes
+
+- name: mysql-restart
+  sudo: yes
+  service: name=mysql state=restarted
+
+- name: cron-start
+  shell: /usr/sbin/service cron start

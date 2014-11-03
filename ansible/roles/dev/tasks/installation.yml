@@ -1,0 +1,70 @@
+---
+- name: retrieve app list
+  sudo: yes
+  shell: apt-get update
+
+- name: Install packages
+  action: apt pkg={{ item }} state=latest
+  sudo: yes
+  with_items: "packages"
+
+- name: Install extentions
+  action: apt pkg={{ item }} state=latest
+  sudo: yes
+  with_items: "extentions"
+
+- name: Add github.com server to ssh-keyscan
+  shell: ssh-keyscan -H -t dsa github.com >> ~/.ssh/known_hosts 2>&1
+
+- name: Add bitbucket.org server to ssh-keyscan
+  shell: ssh-keyscan -H -t dsa bitbucket.org >> ~/.ssh/known_hosts 2>&1
+
+- name: Check if composer is installed
+  sudo: yes
+  stat: path=/usr/local/bin/composer
+  register: composer_exists
+
+- name: Install composer
+  sudo: yes
+  shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin creates=/usr/local/bin/composer
+  when: not composer_exists.stat.exists
+
+- name: Rename composer.phar to composer
+  sudo: yes
+  shell: mv /usr/local/bin/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+  when: not composer_exists.stat.exists
+
+- name: Make composer executable
+  sudo: yes
+  shell: chmod a+x /usr/local/bin/composer
+  when: not composer_exists.stat.exists
+
+- name: Update composer
+  sudo: yes
+  shell: composer self-update
+  when: composer_exists.stat.exists
+
+- name: Check if codecept is installed
+  sudo: yes
+  stat: path=/usr/local/bin/codecept
+  register: codecept_exists
+
+- name: Install codecept
+  sudo: yes
+  shell: wget http://codeception.com/codecept.phar
+  when: not codecept_exists.stat.exists
+
+- name: Rename codecept.phar to codecept
+  sudo: yes
+  shell: mv codecept.phar /usr/local/bin/codecept
+  when: not codecept_exists.stat.exists
+
+- name: Make codecept executable
+  sudo: yes
+  shell: chmod a+x /usr/local/bin/codecept
+  when: not codecept_exists.stat.exists
+
+- name: Update codecept
+  sudo: yes
+  shell: codecept self-update
+  when: codecept_exists.stat.exists

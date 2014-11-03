@@ -1,0 +1,60 @@
+---
+- name: Check if composer.json exists
+  sudo: yes
+  stat: path=/storage/data/{{ hostname }}/composer.json
+  register: symfony_exists
+
+- name: Create symfony write dir
+  sudo: yes
+  file: path=/var/symfony owner={{ remote_user }} group=webserver state=directory mode=0777
+
+- name: Create symfony log dir
+  sudo: yes
+  file: path=/var/symfony/logs owner=www-data group=webserver state=directory mode=0777
+
+- name: Create symfony cache dir
+  sudo: yes
+  file: path=/var/symfony/cache owner=www-data group=webserver state=directory mode=0777
+
+- name: Install new symfony project
+  shell: export SENSIOLABS_FORCE_ACME_DEMO=true; composer create-project symfony/framework-standard-edition {{ hostname }} '2.3.*' chdir="/storage/data" --no-interaction
+  when: not symfony_exists.stat.exists
+
+- name: Overwrite symfony cache and log dir
+  action: lineinfile state=present dest=/storage/data/{{ hostname }}/app/AppKernel.php line="{{ item }}" insertbefore="^}"
+  with_items:
+  - public function getCacheDir(){ return '/var/symfony/cache'; }
+  - public function getLogDir(){ return '/var/symfony/logs';}
+  when: not symfony_exists.stat.exists
+
+- name: Leave the cache dir writable (remove comment)
+  action: lineinfile state=absent dest=/storage/data/{{ hostname }}/app/console line="//umask(0000);"
+  when: not symfony_exists.stat.exists
+
+- name: Leave the cache dir writable (add unmask line)
+  action: lineinfile state=present dest=/storage/data/{{ hostname }}/app/console line="umask(0000);" insertafter="<?php"
+  when: not symfony_exists.stat.exists
+
+- name: remove old cache dir
+  sudo: yes
+  file: path=/var/symfony/cache_old state=absent
+
+- name: Install vendors
+  sudo: yes
+  shell: composer install chdir="/storage/data/{{ hostname }}" --no-interaction
+  when: symfony_exists.stat.exists
+
+- name: Create parameters.yml file
+  template: src=symfony/parameters.yml.j2 dest=/storage/data/{{ hostname }}/app/config/parameters.yml owner={{ remote_user }} mode=0644
+
+- name: Ensure Apache can write to symfony log dir (1/3)
+  sudo: yes
+  shell: chown -R :webserver /var/symfony/cache /var/symfony/logs
+
+- name: Ensure Apache can write to symfony log dir (2/3)
+  sudo: yes
+  shell: chmod g+s /var/symfony/cache /var/symfony/logs
+
+- name: Ensure Apache can write to symfony log dir (3/3)
+  sudo: yes
+  shell: setfacl -dR -m g::rwX /var/symfony/cache /var/symfony/logs
