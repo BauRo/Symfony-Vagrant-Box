@@ -11,6 +11,11 @@
   - "{{ hostname }}"
   - www.{{ hostname }}
 
+- name: Remove default virtual host
+  sudo: yes
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  notify: apache-reload
+
 - name: Add virtual hosts
   template: src=vhost/vhost.conf.j2 dest=/etc/apache2/sites-available/{{ item.key }}.conf mode=0644
   with_dict: vhosts
