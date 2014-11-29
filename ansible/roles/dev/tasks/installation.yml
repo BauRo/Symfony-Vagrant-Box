@@ -12,7 +12,6 @@
 - name: Create node symlink
   sudo: yes
   file: src=/usr/bin/nodejs dest=/usr/bin/node state=link
-  when: nodejs_exists.stat.exists
 
 - name: Install node modules
   npm: name={{ item }} path=/vagrant/data
