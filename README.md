@@ -53,9 +53,8 @@ How to setup
 The file 'shared-hosts.yml' inside the folder 'ansible/vars/' contains the configuration for the hostname of your website.
 Below you see the default configuration.
 
-<blockquote>
-        <p>
-        hostname: your-domain.com
+```apache
+    hostname: your-domain.com
         vhosts:
           'your-domain.com':
             enabled: true
@@ -67,8 +66,7 @@ Below you see the default configuration.
             aliases:
               - www.your-domain.com
         #    settings:
-        </p>
-</blockquote>
+```
  
 ### Server configuration
 Inside the folder 'ansible/vars/dev' there are a couple config files. 
@@ -87,7 +85,10 @@ On your computer you need to install a couple of programs.
 Be aware that you need to do this inside the dir where the file 'Vagrantfile' is located.
 With this command the setup of your box is started. When the command is fully processed the dev enviroment is ready t use.
 3) Add the ip 192.168.5.1 inside the file 'data/your-domain.com/web/app_dev.php' on line number 14.
-Like: '|| !in_array(@$_SERVER['REMOTE_ADDR'], array('127.0.0.1', 'fe80::1', '::1', '192.168.5.1'))'
+Like: 
+```php
+    '|| !in_array(@$_SERVER['REMOTE_ADDR'], array('127.0.0.1', 'fe80::1', '::1', '192.168.5.1'))'
+```
 4) When you go to http://yourcongiguredhostname/app_dev.php you see the Symfony demo app and you can start building your Symfony app.
 
 Vagrant commands
