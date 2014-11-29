@@ -96,7 +96,7 @@ With this command the setup of your box is started. When the command is fully pr
 Vagrant commands
 ----------------
 
-vagrant up: start your development box
-vagrant provision: run ansible configuarations on your box (needed after changing the configuaration files)
-vagrant halt: power down the vagrant box
-vagrant destroy: delete your vagrant box
+- vagrant up: start your development box
+- vagrant provision: run ansible configuarations on your box (needed after changing the configuaration files)
+- vagrant halt: power down the vagrant box
+- vagrant destroy: delete your vagrant box
