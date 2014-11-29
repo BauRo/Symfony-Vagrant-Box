@@ -80,16 +80,16 @@ On your computer you need to install a couple of programs.
 - Ansible: http://docs.ansible.com/intro_installation.html
 - Virtual box: https://www.virtualbox.org/wiki/Downloads
 
-1) Inside your /etc/hosts file add the configured hostname and point it to ip 192.168.5.115
-2) After you installed this tools you can run 'vagrant up' in a terminal app.
+1. Inside your /etc/hosts file add the configured hostname and point it to ip 192.168.5.115
+2. After you installed this tools you can run 'vagrant up' in a terminal app.
 Be aware that you need to do this inside the dir where the file 'Vagrantfile' is located.
 With this command the setup of your box is started. When the command is fully processed the dev enviroment is ready t use.
-3) Add the ip 192.168.5.1 inside the file 'data/your-domain.com/web/app_dev.php' on line number 14.
+3. Add the ip 192.168.5.1 inside the file 'data/your-domain.com/web/app_dev.php' on line number 14.
 Like: 
 ```php
     '|| !in_array(@$_SERVER['REMOTE_ADDR'], array('127.0.0.1', 'fe80::1', '::1', '192.168.5.1'))'
 ```
-4) When you go to http://yourcongiguredhostname/app_dev.php you see the Symfony demo app and you can start building your Symfony app.
+4. When you go to http://yourcongiguredhostname/app_dev.php you see the Symfony demo app and you can start building your Symfony app.
 
 Vagrant commands
 ----------------
