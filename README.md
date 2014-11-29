@@ -75,11 +75,14 @@ For example inside the file 'install.yml' you can change the packages and extens
 
 How to run
 ----------
+
+### Computer configuration
 On your computer you need to install a couple of programs.
 - Vagrant: https://www.vagrantup.com/
 - Ansible: http://docs.ansible.com/intro_installation.html
 - Virtual box: https://www.virtualbox.org/wiki/Downloads
 
+### Box configuration
 * Inside your /etc/hosts file add the configured hostname and point it to ip 192.168.5.115
 * After you installed this tools you can run 'vagrant up' in a terminal app.
 Be aware that you need to do this inside the dir where the file 'Vagrantfile' is located.
