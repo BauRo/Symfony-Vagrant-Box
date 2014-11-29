@@ -1,0 +1,47 @@
+---
+- name: create webserver groups
+  sudo: yes
+  group: name=webserver state=present
+
+- name: create webserver accounts
+  sudo: yes
+  user: name=www-data group=webserver append=yes
+
+- name: create webserver accounts
+  sudo: yes
+  user: name={{ remote_user }} group=webserver append=yes
+
+- name: Create storage dir
+  sudo: yes
+  file: path=/storage state=directory owner={{ remote_user }}
+
+- name: Create locale data dir
+  sudo: yes
+  file: path=/vagrant/data state=directory owner={{ remote_user }}
+
+- name: Create data symlink
+  sudo: yes
+  file: src=/vagrant/data dest=/storage/data owner={{ remote_user }} group=webserver state=link mode=0755
+
+- name: Set locale to UTF-8
+  sudo: yes
+  shell: sudo locale-gen nl_NL.UTF-8
+
+- name: retrieve app list
+  sudo: yes
+  shell: apt-get update
+
+- name: Check if composer is installed
+  sudo: yes
+  stat: path=/usr/local/bin/composer
+  register: composer_exists
+
+- name: Check if codecept is installed
+  sudo: yes
+  stat: path=/usr/local/bin/codecept
+  register: codecept_exists
+
+- name: Check if nodejs is installed
+  sudo: yes
+  stat: path=/usr/bin/nodejs
+  register: nodejs_exists

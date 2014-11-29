@@ -2,9 +2,10 @@
 - hosts: dev-server
 
   vars_files:
-  - vars/dev/dev-config.yml
-  - vars/dev/dev-install.yml
-  - vars/dev/dev-database.yml
+  - vars/dev/config.yml
+  - vars/dev/install.yml
+  - vars/dev/database.yml
+  - vars/dev/symfony.yml
   - vars/shared-hosts.yml
   
   roles:

@@ -17,7 +17,7 @@
   file: path=/var/symfony/cache owner=www-data group=webserver state=directory mode=0777
 
 - name: Install new symfony project
-  shell: export SENSIOLABS_FORCE_ACME_DEMO=true; composer create-project symfony/framework-standard-edition {{ hostname }} '2.3.*' chdir="/storage/data" --no-interaction
+  shell: export SENSIOLABS_FORCE_ACME_DEMO=true; composer create-project symfony/framework-standard-edition {{ hostname }} '{{ symfony_version }}' chdir="/storage/data" --no-interaction
   when: not symfony_exists.stat.exists
 
 - name: Overwrite symfony cache and log dir

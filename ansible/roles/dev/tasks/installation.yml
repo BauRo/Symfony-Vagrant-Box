@@ -1,8 +1,4 @@
 ---
-- name: retrieve app list
-  sudo: yes
-  shell: apt-get update
-
 - name: Install packages
   action: apt pkg={{ item }} state=latest
   sudo: yes
@@ -13,16 +9,20 @@
   sudo: yes
   with_items: "extentions"
 
+- name: Create node symlink
+  sudo: yes
+  file: src=/usr/bin/nodejs dest=/usr/bin/node state=link
+  when: nodejs_exists.stat.exists
+
+- name: Install node modules
+  npm: name={{ item }} path=/vagrant/data
+  with_items: "node_modules"
+
 - name: Add github.com server to ssh-keyscan
   shell: ssh-keyscan -H -t dsa github.com >> ~/.ssh/known_hosts 2>&1
 
 - name: Add bitbucket.org server to ssh-keyscan
   shell: ssh-keyscan -H -t dsa bitbucket.org >> ~/.ssh/known_hosts 2>&1
-
-- name: Check if composer is installed
-  sudo: yes
-  stat: path=/usr/local/bin/composer
-  register: composer_exists
 
 - name: Install composer
   sudo: yes
@@ -44,11 +44,6 @@
   shell: composer self-update
   when: composer_exists.stat.exists
 
-- name: Check if codecept is installed
-  sudo: yes
-  stat: path=/usr/local/bin/codecept
-  register: codecept_exists
-
 - name: Install codecept
   sudo: yes
   shell: wget http://codeception.com/codecept.phar
@@ -63,8 +58,3 @@
   sudo: yes
   shell: chmod a+x /usr/local/bin/codecept
   when: not codecept_exists.stat.exists
-
-- name: Update codecept
-  sudo: yes
-  shell: codecept self-update
-  when: codecept_exists.stat.exists

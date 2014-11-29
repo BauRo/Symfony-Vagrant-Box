@@ -1,16 +1,4 @@
 ---
-- name: create webserver groups
-  sudo: yes
-  group: name=webserver state=present
-
-- name: create webserver accounts
-  sudo: yes
-  user: name=www-data group=webserver append=yes
-
-- name: create webserver accounts
-  sudo: yes
-  user: name={{ remote_user }} group=webserver append=yes
-
 - name: configurate php.ini memorylimit
   sudo: yes
   action: ini_file dest=/etc/php5/apache2/php.ini section=PHP option=memory_limit value=256M
