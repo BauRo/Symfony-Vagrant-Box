@@ -13,3 +13,8 @@
 
 - name: cron-start
   shell: /usr/sbin/service cron start
+
+- name: restart sshd
+  service:
+      name=ssh
+      state=restarted

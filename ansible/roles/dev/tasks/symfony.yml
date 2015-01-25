@@ -1,8 +1,8 @@
 ---
 - name: Check if composer.json exists
   sudo: yes
-  stat: path=/storage/data/{{ hostname }}/composer.json
-  register: symfony_exists
+  stat: path=/storage/data/{{ projectDir }}/composer.json
+  register: project_exists
 
 - name: Create symfony write dir
   sudo: yes
@@ -16,24 +16,39 @@
   sudo: yes
   file: path=/var/symfony/cache owner=www-data group=webserver state=directory mode=0777
 
+- name: Create locale data dir
+  sudo: yes
+  file: path=/vagrant/data state=directory owner={{ remote_user }}
+
+- name: Create data symlink
+  sudo: yes
+  file: src=/vagrant/data dest=/storage/data owner={{ remote_user }} group=webserver state=link mode=0755
+
+- name: Create project dir
+  sudo: yes
+  file: path=/storage/data/{{ projectDir }} state=directory owner={{ remote_user }}
+
+- name: Add bitbucket.org server to ssh-keyscan
+  shell: ssh-keyscan -H -t dsa bitbucket.org >> ~/.ssh/known_hosts 2>&1
+
 - name: Install new symfony project
-  shell: export SENSIOLABS_FORCE_ACME_DEMO=true; composer create-project symfony/framework-standard-edition {{ hostname }} '{{ symfony_version }}' chdir="/storage/data" --no-interaction
-  when: not symfony_exists.stat.exists
+  shell: export SENSIOLABS_FORCE_ACME_DEMO=true; composer create-project symfony/framework-standard-edition {{ projectDir }} '{{ symfony_version }}' chdir="/storage/data" --no-interaction
+  when: not project_exists.stat.exists
 
 - name: Overwrite symfony cache and log dir
-  action: lineinfile state=present dest=/storage/data/{{ hostname }}/app/AppKernel.php line="{{ item }}" insertbefore="^}"
+  action: lineinfile state=present dest=/storage/data/{{ projectDir }}/app/AppKernel.php line="{{ item }}" insertbefore="^}"
   with_items:
   - public function getCacheDir(){ return '/var/symfony/cache'; }
   - public function getLogDir(){ return '/var/symfony/logs';}
-  when: not symfony_exists.stat.exists
+  when: not project_exists.stat.exists
 
 - name: Leave the cache dir writable (remove comment)
-  action: lineinfile state=absent dest=/storage/data/{{ hostname }}/app/console line="//umask(0000);"
-  when: not symfony_exists.stat.exists
+  action: lineinfile state=absent dest=/storage/data/{{ projectDir }}/app/console line="//umask(0000);"
+  when: not project_exists.stat.exists
 
 - name: Leave the cache dir writable (add unmask line)
-  action: lineinfile state=present dest=/storage/data/{{ hostname }}/app/console line="umask(0000);" insertafter="<?php"
-  when: not symfony_exists.stat.exists
+  action: lineinfile state=present dest=/storage/data/{{ projectDir }}/app/console line="umask(0000);" insertafter="<?php"
+  when: not project_exists.stat.exists
 
 - name: remove old cache dir
   sudo: yes
@@ -41,11 +56,10 @@
 
 - name: Install vendors
   sudo: yes
-  shell: composer install chdir="/storage/data/{{ hostname }}" --no-interaction
-  when: symfony_exists.stat.exists
+  shell: composer install chdir="/storage/data/{{ projectDir }}" --no-interaction
 
 - name: Create parameters.yml file
-  template: src=symfony/parameters.yml.j2 dest=/storage/data/{{ hostname }}/app/config/parameters.yml owner={{ remote_user }} mode=0644
+  template: src=symfony/parameters.yml.j2 dest=/storage/data/{{ projectDir }}/app/config/parameters.yml owner={{ remote_user }} mode=0644
 
 - name: Ensure Apache can write to symfony log dir (1/3)
   sudo: yes

@@ -1,0 +1,12 @@
+---
+default_firewall_rule: allow
+
+allow_ports:
+  - 80
+  - 22
+
+reject_ports:
+
+deny_ports:
+
+blocked_ip:

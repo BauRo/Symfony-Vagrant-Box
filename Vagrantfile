@@ -1,6 +1,6 @@
 ##
 # Vagrant box for Symfony projects
-# Made by BauRo (roy@bauweraerts.com)
+# Made by BauRo (roy@bauro.io)
 ##
 
 VAGRANTFILE_API_VERSION = "2"

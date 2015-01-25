@@ -1,0 +1,12 @@
+---
+- name: Create storage dir
+  sudo: yes
+  file: path=/storage state=directory owner={{ remote_user }}
+
+- name: Set locale to UTF-8
+  sudo: yes
+  shell: locale-gen nl_NL.UTF-8
+
+- name: Copy .bashrc file for remote user
+  sudo: yes
+  template: src=system/bashrc.j2 dest=/home/{{ remote_user }}/.bashrc mode=0600

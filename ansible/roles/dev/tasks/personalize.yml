@@ -1,4 +1,15 @@
----
+- name: create webserver groups
+  sudo: yes
+  group: name=webserver state=present
+
+- name: create webserver accounts
+  sudo: yes
+  user: name=www-data group=webserver append=yes
+
+- name: create webserver accounts
+  sudo: yes
+  user: name={{ remote_user }} group=webserver append=yes
+
 - name: Set hostname
   sudo: yes
   hostname: name={{ hostname }}
@@ -10,22 +21,3 @@
   - web-server
   - "{{ hostname }}"
   - www.{{ hostname }}
-
-- name: Remove default virtual host
-  sudo: yes
-  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
-  notify: apache-reload
-
-- name: Add virtual hosts
-  template: src=vhost/vhost.conf.j2 dest=/etc/apache2/sites-available/{{ item.key }}.conf mode=0644
-  with_dict: vhosts
-  sudo: yes
-  notify: apache-reload
-  when: item.value.enabled|bool
-
-- name: Enabel virtual hosts
-  command: a2ensite {{ item.key }}.conf creates=/etc/apache2/sites-enabled/{{ item.key }}.conf
-  with_dict: vhosts
-  sudo: yes
-  notify: apache-reload
-  when: item.value.enabled|bool

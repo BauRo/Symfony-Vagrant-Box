@@ -1,0 +1,25 @@
+---
+- name: Enable apache modules
+  apache2_module: name={{ item }}  state=present
+  sudo: yes
+  with_items: "apache_modules"
+  notify: apache-restart
+
+- name: Remove default virtual host
+  sudo: yes
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  notify: apache-reload
+
+- name: Add virtual hosts
+  template: src=vhost/vhost.conf.j2 dest=/etc/apache2/sites-available/{{ item.key }}.conf mode=0644
+  with_dict: vhosts
+  sudo: yes
+  notify: apache-reload
+  when: item.value.enabled|bool
+
+- name: Enabel virtual hosts
+  command: a2ensite {{ item.key }}.conf creates=/etc/apache2/sites-enabled/{{ item.key }}.conf
+  with_dict: vhosts
+  sudo: yes
+  notify: apache-reload
+  when: item.value.enabled|bool

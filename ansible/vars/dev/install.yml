@@ -1,5 +1,6 @@
 ---
 packages:
+  - ufw
   - apache2
   - php5
   - sendmail
@@ -11,6 +12,8 @@ packages:
   - mysql-server
   - mysql-client
   - python-mysqldb
+  - multitail
+  - tree
   - nodejs
   - npm
 
@@ -30,3 +33,11 @@ node_modules:
   - karma-mocha
   - chai
   - karma-phantomjs-launcher
+
+apache_modules:
+  - rewrite
+  - ssl
+  - proxy
+  - proxy_http
+  - proxy_wstunnel
+  - headers

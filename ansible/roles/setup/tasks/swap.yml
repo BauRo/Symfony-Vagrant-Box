@@ -1,0 +1,29 @@
+---
+- name: Check if Swapfile exists
+  stat: path=/swapfile
+  register: swapfile_exists
+
+- name: Create Swap file
+  sudo: yes
+  shell: fallocate -l 4G /swapfile
+  when: not swapfile_exists.stat.exists
+
+- name: Give the Swap file the correct rights
+  sudo: yes
+  shell: chmod 600 /swapfile
+  when: not swapfile_exists.stat.exists
+
+- name: Set up Swap space
+  sudo: yes
+  shell: mkswap /swapfile
+  when: not swapfile_exists.stat.exists
+
+- name: Enable Swap file
+  sudo: yes
+  shell: swapon /swapfile
+  when: not swapfile_exists.stat.exists
+
+- name: Make the swap file permanent
+  sudo: yes
+  lineinfile: dest=/etc/fstab line="/swapfile   none    swap    sw    0   0" state=present insertafter=EOF
+  when: not swapfile_exists.stat.exists

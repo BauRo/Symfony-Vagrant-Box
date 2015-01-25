@@ -1,0 +1,36 @@
+---
+- name: Reset firewall
+  ufw: state=reset
+  sudo: yes
+
+- name: set firewall logging
+  ufw: logging=on
+  sudo: yes
+
+- name: Enable ports in firewall
+  ufw: rule=allow port={{ item }}
+  sudo: yes
+  with_items: "allow_ports"
+
+- name: Deny ports in firewall
+  ufw: rule=deny port={{ item }}
+  sudo: yes
+  with_items: "deny_ports"
+
+- name: Reject ports in firewall
+  ufw: rule=reject port={{ item }}
+  sudo: yes
+  with_items: "reject_ports"
+
+- name: Reject traffic from ip
+  ufw: rule=allow src={{ item }}
+  sudo: yes
+  with_items: "blocked_ip"
+
+- name: Reload firewall and set default policy
+  ufw: state=reloaded policy={{ default_firewall_rule }}
+  sudo: yes
+
+- name: Start firewall
+  ufw: state=enabled
+  sudo: yes

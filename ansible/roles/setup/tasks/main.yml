@@ -1,0 +1,8 @@
+---
+- include: setup.yml
+- include: installation.yml
+- include: configuration.yml
+- include: database.yml
+- include: apache.yml
+- include: swap.yml
+- include: firewall.yml

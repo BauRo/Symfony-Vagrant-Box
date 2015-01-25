@@ -6,7 +6,6 @@
   sudo: yes
   mysql_user: name=root host={{ item }} password={{ database_root_password }} priv=*.*:ALL,GRANT
   with_items:
-  - 192.168.5.125
   - 127.0.0.1
   - ::1
   - localhost
@@ -19,7 +18,6 @@
   sudo: yes
   mysql_user: name='' host={{ item }} state=absent
   with_items:
-  - 192.168.5.125
   - 127.0.0.1
   - ::1
   - localhost

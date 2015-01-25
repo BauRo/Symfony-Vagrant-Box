@@ -3,5 +3,5 @@ database_host: localhost
 database_port: 3306
 database_name: symfony
 database_user: symfony
-database_pass: mAxaTr6f4q!f
-database_root_password: -unUKa6eGe-A
+database_pass: pass
+database_root_password: root_pass

@@ -2,18 +2,9 @@
 - name: configurate php.ini memorylimit
   sudo: yes
   action: ini_file dest=/etc/php5/apache2/php.ini section=PHP option=memory_limit value=256M
+  notify: apache-restart
 
 - name: configurate php.ini timezone
   sudo: yes
   action: ini_file dest=/etc/php5/apache2/php.ini section=Date option=date.timezone value=Europe/Amsterdam
-  notify: apache-restart
-
-- name: Enable rewrite (apache)
-  sudo: yes
-  action: shell a2enmod rewrite
-  notify: apache-restart
-
-- name: Enable ssl (apache)
-  sudo: yes
-  action: shell a2enmod ssl
   notify: apache-restart

@@ -5,9 +5,10 @@
   - vars/dev/config.yml
   - vars/dev/install.yml
   - vars/dev/database.yml
+  - vars/dev/firewall.yml
   - vars/dev/symfony.yml
   - vars/shared-hosts.yml
   
   roles:
+  - setup
   - dev
-  - shared
