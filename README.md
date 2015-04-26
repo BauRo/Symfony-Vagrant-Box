@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/BauRo/Symfony-Vagrant-Box.png?label=ready&title=Ready)](https://waffle.io/BauRo/Symfony-Vagrant-Box)
+
 Symfony-Vagrant-Box
 ===================
 A development vagrant box for Symfony projects.
